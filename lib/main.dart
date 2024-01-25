@@ -81,7 +81,7 @@ class _ProductListScreenState extends State<ProductListScreen>{
   }
   //--ham doc du lieu tu server
   Future<void> fetchProduct() async {
-    final response = await http.get(Uri.parse("http://192.168.1.3/asv/api.php"));
+    final response = await http.get(Uri.parse("http://192.168.1.9/asv/api.php"));
     if(response.statusCode==200){
       final Map<String,dynamic> data=json.decode(response.body);
       setState(() {
@@ -117,7 +117,16 @@ class _ProductListScreenState extends State<ProductListScreen>{
                 width: 50,
                 height: 50,
                 fit: BoxFit.cover,
-              )
+              ),
+            onTap: ()
+
+            {
+              Navigator.push(context, 
+                  MaterialPageRoute(builder: (context)=> ProductDetailScreen(product[index]),
+                  ),
+
+              );
+            },
           );
         },
       )
@@ -127,6 +136,66 @@ class _ProductListScreenState extends State<ProductListScreen>{
     );
   }
 }
+//Định nghĩa lop Chi tiết sản phẩm
+class ProductDetailScreen extends StatelessWidget{
+  final Product product;
+  ProductDetailScreen(this.product);
+//giao diện
+  @override
+  Widget build(BuildContext context) {
+   return Scaffold(
+     appBar: AppBar(
+       title: Text('Product Detail'),
+       actions: [
+         ElevatedButton(onPressed: (){
+           Navigator.push(context,
+           MaterialPageRoute(builder: (context)=>CartScreen()),);
+   }, child: Icon(Icons.shopping_cart),
+   style: ElevatedButton.styleFrom(
+     shape: CircleBorder(),
+     padding: EdgeInsets.all(0)
+   ),
+   ),
+       ],
+     ),
+     body: Column(
+       crossAxisAlignment: CrossAxisAlignment.start,
+       children: [
+         Padding(padding: const EdgeInsets.all(8),
+         child: Text('Brand:${product.brands_filter_facet}'),
+         ),
+         Image.network(product.search_image),
+         Padding(padding: const EdgeInsets.all(8),
+           child: Text('Info:${product.product_additional_info}',
+             style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold),
+           ),
+         ),
+         Padding(padding: const EdgeInsets.all(8),
+         child: Text('ID: ${product.styleid}') ,
+         ),
+         Padding(padding: const EdgeInsets.all(8),
+         child: Text('Price: ${product.price}'),
+         )
+
+       ],
+     ),
+   );
+  }
+
+}
+class CartScreen extends StatelessWidget{
+  @override
+  Widget build(BuildContext context) {
+   return Scaffold(
+     appBar: AppBar(title: Text("Shopping Cart"),),
+     body: Center(
+       child: Text('Gio hang cua ban'),
+     ),
+   );
+  }
+
+}
+
 //--
 class Product{
   String search_image;
